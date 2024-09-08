@@ -8,6 +8,9 @@ export function useCreateStore() {
     mutationFn: createStore,
     onSuccess: (data) => {
       toast.success('Store created successfully!');
+
+      //this is set the url after reset if anybody try to remove url it get back to same url
+      window.location.assign(`/${data?.id}`);
       console.log('Store created successfully:', data);
     },
     onError: (error) => {
