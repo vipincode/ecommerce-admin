@@ -1,7 +1,6 @@
 import { ModalProvider } from '@/providers/modal-provider';
-import { ReactQueryProvider } from '@/providers/react-query-provider';
+import ReactQueryProvider from '@/providers/react-query-provider';
 import { ClerkProvider } from '@clerk/nextjs';
-import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
 import type { Metadata } from 'next';
 import localFont from 'next/font/local';
 import './globals.css';
@@ -34,7 +33,6 @@ export default function RootLayout({
           <ReactQueryProvider>
             <ModalProvider />
             {children}
-            <ReactQueryDevtools initialIsOpen={false} />
           </ReactQueryProvider>
         </body>
       </html>
