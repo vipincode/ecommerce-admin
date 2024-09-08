@@ -8,6 +8,7 @@ import { useStoreModal } from '@/hooks/use-store-modal';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
 import { Button } from '@/components/ui/button';
+import { useCreateStore } from '@/hooks/react-query/hooks';
 
 const formSchema = z.object({
   name: z.string().min(1),
@@ -15,6 +16,7 @@ const formSchema = z.object({
 
 export const StoreModal = () => {
   const storeModal = useStoreModal();
+  const { mutate, isError, isPending, isSuccess, error, data } = useCreateStore();
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -24,8 +26,11 @@ export const StoreModal = () => {
   });
 
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
-    // TODO: Create Store
-    console.log(values);
+    try {
+      mutate(values);
+    } catch (error) {
+      console.error('Error during submission:', error);
+    }
   };
 
   return (
@@ -48,6 +53,7 @@ export const StoreModal = () => {
                     <FormControl>
                       <Input
                         placeholder='E-Commerce'
+                        disabled={isPending}
                         {...field}
                       />
                     </FormControl>
@@ -63,11 +69,19 @@ export const StoreModal = () => {
                 >
                   Cancel
                 </Button>
-                <Button type='submit'>Continue</Button>
+                <Button
+                  type='submit'
+                  disabled={isPending}
+                >
+                  {isPending ? 'Creating store...' : 'Continue'}
+                </Button>
               </div>
             </form>
           </Form>
         </div>
+        {isPending && <p>Creating store...</p>}
+        {isError && <p>Error: {error?.message}</p>}
+        {isSuccess && <p>Store created successfully: {data?.name}</p>}
       </div>
     </Modal>
   );
